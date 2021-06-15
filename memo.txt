@@ -1,0 +1,15 @@
+# Automate running pigpio daemon
+systemctl enable pigpiod.service
+echo '@reboot until echo "m 17 w   w 17 0   m 18 r   pud 18 u" > /dev/pigpio; do sleep 1s; done' >> /var/spool/cron/crontabs/pi
+
+# Enable spi
+sed -i -e "s/#dtparam=spi=on/dtparam=spi=on/" /boot/config.txt
+
+        # if request.json["command"] == "infrared":
+        #     if infrared.send(request.json["signal"]):
+        #         return {"result": "ok"}
+        #     else:
+        #         return {"result": "error"}
+
+# Enable Serial Port
+sudo sed -i -e "s/^enable_uart=.*/enable_uart=1/" /boot/config.txt
