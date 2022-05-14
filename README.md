@@ -6,7 +6,7 @@ IoT Managerは、Raspberry Piに接続されたI2Cデバイスを制御するAPI
 
 ## 環境
 
-* 言語 : Python 3.10.1
+* 言語 : Python 3.10.4
 * WEB フレームワーク : Flask 1.1.4, Flask-RESTX 0.4.0
 * ライブラリ : smbus2 0.4.1
 * OS : Raspbian Buster
