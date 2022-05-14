@@ -3,6 +3,21 @@ from flask_restx import Api, Resource, fields
 import sht35dis
 import lps25hb
 import tsl25721
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+dotenv_path = join(dirname(__file__), ".env")
+load_dotenv(verbose=True, dotenv_path=dotenv_path)
+SENTRY_DSN = os.environ.get("SENTRY_DSN")
+
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=[FlaskIntegration()],
+    traces_sample_rate=1.0
+)
 
 app = Flask(__name__)
 api = Api(
