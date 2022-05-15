@@ -1,5 +1,5 @@
-Flask==1.1.4
-flask-restx==0.4.0
+Flask==2.1.2
+flask-restx==0.5.1
 smbus2==0.4.1
 python-dotenv==0.20.0
 sentry-sdk[flask]==1.5.12
