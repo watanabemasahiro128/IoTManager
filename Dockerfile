@@ -4,8 +4,8 @@ RUN mkdir /IoTManager
 ENV APP_ROOT /IoTManager
 WORKDIR $APP_ROOT
 
-COPY requirements.txt $APP_ROOT/requirements.txt
-RUN pip3 install --no-cache-dir -r requirements.txt
+COPY requirements.txt $APP_ROOT/requirements.lock
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.lock
 
 COPY . $APP_ROOT
 
