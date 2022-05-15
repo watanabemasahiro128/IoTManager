@@ -1,50 +1,102 @@
-# README
+# IoT Manager
 
-## 概要
+## What is this?
 
-IoT Managerは、Raspberry Piに接続されたI2Cデバイスを制御するAPIサーバーです。
+IoT Manager is an API server that controls I2C devices and Serial Port devices connected to the Raspberry Pi.
 
-## 環境
+## Environment
 
-* 言語 : Python 3.10.4
-* WEB フレームワーク : Flask 1.1.4, Flask-RESTX 0.4.0
-* ライブラリ : smbus2 0.4.1
-* OS : Raspbian Buster
+- Language : Python 3.10.4
+- WEB Framework : Flask==2.1.2, Flask-RESTX==0.5.1
+- Libraries : smbus2==0.4.1, mh_z19==3.1.3, python-dotenv==0.20.0, sentry-sdk[flask]==1.5.12
+- OS : Raspbian Pi OS
 
-## 使用方法
+## Usage
 
-以下のようなJSON形式のデータをPOSTリクエストで送信してください。
+Send the following data in JSON format with a POST request.
 
-| キー    | 型     | 説明                                                                                                                  |
-| ------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
-| command | String | 温度("temperature"), 湿度("humidity"), 気圧("pressure"), 照度("illuminance")のうち、取得したい値を送信してください。 |
+| Key     | Value                |
+| ------- | -------------------- |
+| command | "temperature" or "humidity" or "pressure" or "illuminance" or "co2" |
 
-POSTリクエストが成功すると、以下のJSONデータが返ってきます。
+If the POST request is successful, the following JSON data is returned.
 
-| キー   | 型    | 説明                                |
-| ------ | ----- | ----------------------------------- |
-| result | float | 指定したcommandの値が返ってきます。 |
+| Key    | Value        |
+| ------ | ------------ |
+| result | (e.g.: 28.5) |
 
-POSTリクエストが失敗すると、HTTPステータスコード400で以下のJSONデータが返ってきます。
+If the POST request fails, the following JSON data is returned with HTTP status code 400.
 
-| キー   | 型     | 値                | 説明                      |
-| ------ | ------ | ----------------- | ------------------------- |
-| result | string | Command Not Found | commandが間違っています。 |
+| Key    | Value               |
+| ------ | ------------------- |
+| result | "Command Not Found" |
 
-## 実行方法
+## Setup
 
-### 環境構築
+### Install Docker
 
-`sudo ./setup.sh`
+```sh
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+rm get-docker.sh
+```
 
-### ビルド
+### Install pigpio
 
-`docker build -t iot_manager .`
+```sh
+apt install -y pigpio
+pip3 install pigpio
+```
 
-### 起動
+### Enable I2C
 
-`docker run -d --rm --net host --device=/dev/i2c-1 --name iot_manager iot_manager`
+```sh
+sudo raspi-config
+```
 
-## ライセンス
+Interface Options > I2C > Yes
+
+### Enable Serial Port
+
+```sh
+sudo raspi-config
+```
+
+Interface Options > Serial Port > No > Yes
+
+### Grant read permission
+
+#### Check the link source of /dev/serial0
+
+```sh
+ls -la /dev/serial0
+# lrwxrwxrwx 1 root root 5  1月 1 00:00 /dev/serial0 -> ttyS0
+```
+
+#### Grant read group permission
+
+```sh
+sudo chmod g+r /dev/ttyS0
+```
+
+### Reboot
+
+```sh
+reboot
+```
+
+### Build
+
+```
+docker build -t iot_manager .
+```
+
+## Run
+
+```sh
+docker run -d --rm --net host --device=/dev/i2c-1 --device=/dev/ttyS0 --name iot_manager iot_manager
+```
+
+## License
 
 MIT
