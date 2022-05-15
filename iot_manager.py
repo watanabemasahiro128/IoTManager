@@ -3,6 +3,7 @@ from flask_restx import Api, Resource, fields
 import sht35dis
 import lps25hb
 import tsl25721
+import mhz19
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -59,6 +60,10 @@ class Switch(Resource):
             illuminance = tsl25721.measure_illuminance()
             print("Illuminance :", illuminance)
             return {"result": format(illuminance, ".1f")}
+        elif request.json["command"] == "co2":
+            co2 = mhz19.measure_co2()
+            print("CO2 :", co2)
+            return {"result": format(co2, ".1f")}
         else:
             print("Error")
             return {"result": "Command Not Found"}, 400
